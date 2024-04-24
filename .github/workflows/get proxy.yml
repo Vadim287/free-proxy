@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo content
-        uses: actions/checkout@v2 
+        uses: actions/checkout@v3
     
       - name: Setup python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: '3.10'
           
@@ -38,7 +38,7 @@ jobs:
           git branch -u origin/main
           
       - name: Push changes
-        uses: ad-m/github-push-action@v0.6.0
+        uses: ad-m/github-push-action@v0.7.0
         with:
           github_token: ${{ secrets.TOKEN_GITHUB }}
           branch: main
