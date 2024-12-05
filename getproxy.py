@@ -2,37 +2,89 @@ import json
 import datetime
 import requests
 import re
+
 class Downloadproxies():
     def __init__(self) -> None:
         self.api = {
-    'socks4':[
-        'https://raw.githubusercontent.com/ObcbO/getproxy/master/file/socks4.txt',
-        'https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks4.txt',
-        'https://raw.githubusercontent.com/officialputuid/KangProxy/KangProxy/socks4/socks4.txt',
-        'https://raw.githubusercontent.com/ProxyScraper/ProxyScraper/main/socks4.txt',
-        'https://raw.githubusercontent.com/TuanMinPay/live-proxy/master/socks4.txt',
-        'https://raw.githubusercontent.com/ErcinDedeoglu/proxies/main/proxies/socks4.txt'
-        ],
-    'socks5': [
-        'https://raw.githubusercontent.com/ObcbO/getproxy/master/file/socks5.txt',
-        'https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks5.txt',
-        'https://raw.githubusercontent.com/officialputuid/KangProxy/KangProxy/socks5/socks5.txt',
-        'https://raw.githubusercontent.com/TuanMinPay/live-proxy/master/socks5.txt',
-        'https://raw.githubusercontent.com/ProxyScraper/ProxyScraper/main/socks5.txt',
-        'https://raw.githubusercontent.com/ErcinDedeoglu/proxies/main/proxies/socks5.txt'
-        ],
-    'http': [
-        'https://raw.githubusercontent.com/officialputuid/KangProxy/KangProxy/https/https.txt',
-        'https://raw.githubusercontent.com/ObcbO/getproxy/master/file/http.txt',
-        'https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt',
-        'https://github.com/ObcbO/getproxy/blob/master/file/https.txt',
-        'https://raw.githubusercontent.com/officialputuid/KangProxy/KangProxy/http/http.txt',
-        'https://raw.githubusercontent.com/TuanMinPay/live-proxy/master/http.txt',
-        'https://raw.githubusercontent.com/ProxyScraper/ProxyScraper/main/http.txt',
-        'https://raw.githubusercontent.com/ErcinDedeoglu/proxies/main/proxies/http.txt',
-        'https://raw.githubusercontent.com/ErcinDedeoglu/proxies/main/proxies/https.txt'
-    ]}
-        self.proxy_dict = {'socks4':[],'socks5':[],'http':[]}
+            'socks4': [
+                'https://raw.githubusercontent.com/ObcbO/getproxy/master/file/socks4.txt',
+                'https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks4.txt',
+                'https://raw.githubusercontent.com/officialputuid/KangProxy/KangProxy/socks4/socks4.txt',
+                'https://raw.githubusercontent.com/ProxyScraper/ProxyScraper/main/socks4.txt',
+                'https://raw.githubusercontent.com/TuanMinPay/live-proxy/master/socks4.txt',
+                'https://raw.githubusercontent.com/ErcinDedeoglu/proxies/main/proxies/socks4.txt',
+                'https://www.proxy-list.download/api/v1/get?type=socks4',
+                'https://www.proxyscan.io/download?type=socks4',
+                'https://spys.me/socks.txt',
+                'https://www.my-proxy.com/socks-4.txt',
+                'https://www.socks-proxy.net/',
+                'https://proxyscrape.com/proxies/none_anonymous/socks4/file.txt',
+                'https://www.proxy-list.download/SOCKS4',
+                'https://txt.proxyspy.net/socks4.txt',
+                'https://www.advanced.name/freeproxy/39543564f4ca9b7e56714fe23/',
+                'https://hidemy.name/en/proxy-list/?type=4#list',
+                'https://premproxy.com/socks-list/',
+                'https://www.proxylists.net/',
+                'https://www.sslproxies.org/',
+                'https://www.freeproxylist.net/',
+                'https://www.socks-proxy.net/',
+                'https://www.socks24.org/',
+                
+            ],
+            'socks5': [
+                'https://raw.githubusercontent.com/ObcbO/getproxy/master/file/socks5.txt',
+                'https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks5.txt',
+                'https://raw.githubusercontent.com/officialputuid/KangProxy/KangProxy/socks5/socks5.txt',
+                'https://raw.githubusercontent.com/TuanMinPay/live-proxy/master/socks5.txt',
+                'https://raw.githubusercontent.com/ProxyScraper/ProxyScraper/main/socks5.txt',
+                'https://raw.githubusercontent.com/ErcinDedeoglu/proxies/main/proxies/socks5.txt',
+                'https://www.proxy-list.download/api/v1/get?type=socks5',
+                'https://www.proxyscan.io/download?type=socks5',
+                'https://spys.me/socks.txt',
+                'https://www.my-proxy.com/socks-5.txt',
+                'https://proxyscrape.com/proxies/none_anonymous/socks5/file.txt',
+                'https://www.proxy-list.download/SOCKS5',
+                'https://www.socks-proxy.net/',
+                'https://txt.proxyspy.net/socks5.txt',
+                'https://www.advanced.name/freeproxy/8dec82dfe1c12b7de7f8f87ed/',
+                'https://hidemy.name/en/proxy-list/?type=5#list',
+                'https://sockslist.net/',
+                'https://www.proxynova.com/proxy-server-list/socks5/',
+                'https://www.socks-proxy.net/',
+                'https://www.proxymanager.org/',
+                'https://www.usaproxy.org/',
+                
+            ],
+            'http': [
+                'https://raw.githubusercontent.com/officialputuid/KangProxy/KangProxy/https/https.txt',
+                'https://raw.githubusercontent.com/ObcbO/getproxy/master/file/http.txt',
+                'https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt',
+                'https://github.com/ObcbO/getproxy/blob/master/file/https.txt',
+                'https://raw.githubusercontent.com/officialputuid/KangProxy/KangProxy/http/http.txt',
+                'https://raw.githubusercontent.com/TuanMinPay/live-proxy/master/http.txt',
+                'https://raw.githubusercontent.com/ProxyScraper/ProxyScraper/main/http.txt',
+                'https://raw.githubusercontent.com/ErcinDedeoglu/proxies/main/proxies/http.txt',
+                'https://raw.githubusercontent.com/ErcinDedeoglu/proxies/main/proxies/https.txt',
+                'https://www.proxy-list.download/api/v1/get?type=http',
+                'https://www.proxyscan.io/download?type=http',
+                'https://www.us-proxy.org/',
+                'https://free-proxy-list.net/',
+                'https://proxysearcher.sourceforge.net/Proxy%20List.php?type=http',
+                'https://proxyscrape.com/proxies/none_anonymous/http/file.txt',
+                'https://api.proxyscrape.com?request=getproxies&proxytype=http',
+                'https://www.sslproxies.org/',
+                'https://www.proxy-list.download/HTTP',
+                'https://www.advanced.name/freeproxy/8dd96814aa62bca283294c051/',
+                'https://www.xroxy.com/proxylist.php?port=&type=All_http&ssl=&country=&latency=&reliability=#table',
+                'https://proxygather.com/',
+                'https://www.proxynova.com/proxy-server-list/',
+                'https://www.proxy-listen.de/Proxy/Proxyliste.html',
+                'https://www.anonymous-proxy-servers.net/',
+                'https://www.cool-proxy.net/',
+                
+            ]
+        }
+        self.proxy_dict = {'socks4': [], 'socks5': [], 'http': []}
         pass
 
     def get_special1(self):
