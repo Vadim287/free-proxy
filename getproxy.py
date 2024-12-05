@@ -159,14 +159,18 @@ class Downloadproxies():
             pass
 
     def save_proxies_by_country(self):
-        os.makedirs('world', exist_ok=True)
-        for country, proxies in self.country_proxies.items():
-            country_dir = os.path.join('world', country)
-            os.makedirs(country_dir, exist_ok=True)
-            with open(os.path.join(country_dir, 'proxies.txt'), 'w') as f:
-                for proxy in proxies:
-                    f.write(proxy + '\n')
-            print(f"Saved proxies for {country} in {country_dir}")
+    os.makedirs('world', exist_ok=True)
+    for country, proxies in self.country_proxies.items():
+        country_dir = os.path.join('world', country)
+        os.makedirs(country_dir, exist_ok=True)
+        
+        unique_proxies = list(set(proxies))  # Удаление дубликатов
+        
+        with open(os.path.join(country_dir, 'proxies.txt'), 'w') as f:
+            for proxy in unique_proxies:
+                f.write(proxy + '\n')
+        
+        print(f"Saved {len(unique_proxies)} unique proxies for {country} in {country_dir}")
 
     def execute(self):
         self.get()
