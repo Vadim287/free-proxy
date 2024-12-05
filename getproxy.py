@@ -28,15 +28,12 @@ class Downloadproxies():
                 'https://txt.proxyspy.net/socks4.txt',
                 'https://www.advanced.name/freeproxy/39543564f4ca9b7e56714fe23/',
                 'https://hidemy.name/en/proxy-list/?type=4#list',
-                # Дополнительные источники
-                # Эти адреса могут быть платными или устаревшими, используйте их с осторожностью.
                 'https://premproxy.com/socks-list/',
                 'https://www.proxylists.net/',
                 'https://www.sslproxies.org/',
                 'https://www.freeproxylist.net/',
                 'https://www.socks-proxy.net/',
                 'https://www.socks24.org/',
-                # Продолжайте добавлять при необходимости
             ],
             'socks5': [
                 'https://raw.githubusercontent.com/ObcbO/getproxy/master/file/socks5.txt',
@@ -55,13 +52,11 @@ class Downloadproxies():
                 'https://txt.proxyspy.net/socks5.txt',
                 'https://www.advanced.name/freeproxy/8dec82dfe1c12b7de7f8f87ed/',
                 'https://hidemy.name/en/proxy-list/?type=5#list',
-                # Дополнительные источники
                 'https://sockslist.net/',
                 'https://www.proxynova.com/proxy-server-list/socks5/',
                 'https://www.socks-proxy.net/',
                 'https://www.proxymanager.org/',
                 'https://www.usaproxy.org/',
-                # Продолжайте добавлять при необходимости
             ],
             'http': [
                 'https://raw.githubusercontent.com/officialputuid/KangProxy/KangProxy/https/https.txt',
@@ -84,13 +79,11 @@ class Downloadproxies():
                 'https://www.proxy-list.download/HTTP',
                 'https://www.advanced.name/freeproxy/8dd96814aa62bca283294c051/',
                 'https://www.xroxy.com/proxylist.php?port=&type=All_http&ssl=&country=&latency=&reliability=#table',
-                # Дополнительные источники
                 'https://proxygather.com/',
                 'https://www.proxynova.com/proxy-server-list/',
                 'https://www.proxy-listen.de/Proxy/Proxyliste.html',
                 'https://www.anonymous-proxy-servers.net/',
                 'https://www.cool-proxy.net/',
-                # Продолжайте добавлять при необходимости
             ]
         }
         self.proxy_dict = {'socks4': [], 'socks5': [], 'http': []}
