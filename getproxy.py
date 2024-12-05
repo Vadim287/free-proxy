@@ -28,12 +28,15 @@ class Downloadproxies():
                 'https://txt.proxyspy.net/socks4.txt',
                 'https://www.advanced.name/freeproxy/39543564f4ca9b7e56714fe23/',
                 'https://hidemy.name/en/proxy-list/?type=4#list',
+                # Дополнительные источники
+                # Эти адреса могут быть платными или устаревшими, используйте их с осторожностью.
                 'https://premproxy.com/socks-list/',
                 'https://www.proxylists.net/',
                 'https://www.sslproxies.org/',
                 'https://www.freeproxylist.net/',
                 'https://www.socks-proxy.net/',
                 'https://www.socks24.org/',
+                # Продолжайте добавлять при необходимости
             ],
             'socks5': [
                 'https://raw.githubusercontent.com/ObcbO/getproxy/master/file/socks5.txt',
@@ -52,11 +55,13 @@ class Downloadproxies():
                 'https://txt.proxyspy.net/socks5.txt',
                 'https://www.advanced.name/freeproxy/8dec82dfe1c12b7de7f8f87ed/',
                 'https://hidemy.name/en/proxy-list/?type=5#list',
+                # Дополнительные источники
                 'https://sockslist.net/',
                 'https://www.proxynova.com/proxy-server-list/socks5/',
                 'https://www.socks-proxy.net/',
                 'https://www.proxymanager.org/',
                 'https://www.usaproxy.org/',
+                # Продолжайте добавлять при необходимости
             ],
             'http': [
                 'https://raw.githubusercontent.com/officialputuid/KangProxy/KangProxy/https/https.txt',
@@ -79,16 +84,18 @@ class Downloadproxies():
                 'https://www.proxy-list.download/HTTP',
                 'https://www.advanced.name/freeproxy/8dd96814aa62bca283294c051/',
                 'https://www.xroxy.com/proxylist.php?port=&type=All_http&ssl=&country=&latency=&reliability=#table',
+                # Дополнительные источники
                 'https://proxygather.com/',
                 'https://www.proxynova.com/proxy-server-list/',
                 'https://www.proxy-listen.de/Proxy/Proxyliste.html',
                 'https://www.anonymous-proxy-servers.net/',
                 'https://www.cool-proxy.net/',
+                # Продолжайте добавлять при необходимости
             ]
         }
         self.proxy_dict = {'socks4': [], 'socks5': [], 'http': []}
         self.country_proxies = defaultdict(list)
-        self.executor = ThreadPoolExecutor(max_workers=20000)
+        self.executor = ThreadPoolExecutor(max_workers=20000)  # Параллельная обработка
 
     def ip_to_country(self, ip):
         try:
@@ -113,22 +120,6 @@ class Downloadproxies():
 
         print("Sorted proxies by country.")
 
-    def save_raw_proxies(self):
-        os.makedirs('proxies', exist_ok=True)
-        for proxy_type, proxies in self.proxy_dict.items():
-            with open(f'proxies/{proxy_type}.txt', 'w') as f:
-                for proxy in proxies:
-                    f.write(proxy + '\n')
-            print(f"Saved raw {proxy_type} proxies.")
-
-    def save_cleaned_proxies(self):
-        os.makedirs('cleaned_proxies', exist_ok=True)
-        for proxy_type, proxies in self.proxy_dict.items():
-            with open(f'cleaned_proxies/{proxy_type}.txt', 'w') as f:
-                for proxy in proxies:
-                    f.write(proxy + '\n')
-            print(f"Saved cleaned {proxy_type} proxies.")
-
     def get(self):
         futures = []
         for proxy_type, apis in self.api.items():
@@ -136,15 +127,11 @@ class Downloadproxies():
                 futures.append(self.executor.submit(self.fetch_proxies, proxy_type, api))
         
         for future in as_completed(futures):
-            future.result()
-
-        self.save_raw_proxies()
+            future.result()  # Ждем, пока все запросы завершатся
 
         self.proxy_dict['socks4'] = list(set(self.proxy_dict['socks4']))
         self.proxy_dict['socks5'] = list(set(self.proxy_dict['socks5']))
         self.proxy_dict['http'] = list(set(self.proxy_dict['http']))
-        
-        self.save_cleaned_proxies()
 
         print('> Get proxies done.')
 
@@ -159,18 +146,14 @@ class Downloadproxies():
             pass
 
     def save_proxies_by_country(self):
-    os.makedirs('world', exist_ok=True)
-    for country, proxies in self.country_proxies.items():
-        country_dir = os.path.join('world', country)
-        os.makedirs(country_dir, exist_ok=True)
-        
-        unique_proxies = list(set(proxies))  # Удаление дубликатов
-        
-        with open(os.path.join(country_dir, 'proxies.txt'), 'w') as f:
-            for proxy in unique_proxies:
-                f.write(proxy + '\n')
-        
-        print(f"Saved {len(unique_proxies)} unique proxies for {country} in {country_dir}")
+        os.makedirs('world', exist_ok=True)
+        for country, proxies in self.country_proxies.items():
+            country_dir = os.path.join('world', country)
+            os.makedirs(country_dir, exist_ok=True)
+            with open(os.path.join(country_dir, 'proxies.txt'), 'w') as f:
+                for proxy in proxies:
+                    f.write(proxy + '\n')
+            print(f"Saved proxies for {country} in {country_dir}")
 
     def execute(self):
         self.get()
