@@ -2,6 +2,11 @@ import json
 import datetime
 import requests
 import re
+import os
+import subprocess
+from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 
 class Downloadproxies():
     def __init__(self) -> None:
@@ -23,13 +28,15 @@ class Downloadproxies():
                 'https://txt.proxyspy.net/socks4.txt',
                 'https://www.advanced.name/freeproxy/39543564f4ca9b7e56714fe23/',
                 'https://hidemy.name/en/proxy-list/?type=4#list',
+                # Дополнительные источники
+                # Эти адреса могут быть платными или устаревшими, используйте их с осторожностью.
                 'https://premproxy.com/socks-list/',
                 'https://www.proxylists.net/',
                 'https://www.sslproxies.org/',
                 'https://www.freeproxylist.net/',
                 'https://www.socks-proxy.net/',
                 'https://www.socks24.org/',
-                
+                # Продолжайте добавлять при необходимости
             ],
             'socks5': [
                 'https://raw.githubusercontent.com/ObcbO/getproxy/master/file/socks5.txt',
@@ -48,12 +55,13 @@ class Downloadproxies():
                 'https://txt.proxyspy.net/socks5.txt',
                 'https://www.advanced.name/freeproxy/8dec82dfe1c12b7de7f8f87ed/',
                 'https://hidemy.name/en/proxy-list/?type=5#list',
+                # Дополнительные источники
                 'https://sockslist.net/',
                 'https://www.proxynova.com/proxy-server-list/socks5/',
                 'https://www.socks-proxy.net/',
                 'https://www.proxymanager.org/',
                 'https://www.usaproxy.org/',
-                
+                # Продолжайте добавлять при необходимости
             ],
             'http': [
                 'https://raw.githubusercontent.com/officialputuid/KangProxy/KangProxy/https/https.txt',
@@ -76,120 +84,102 @@ class Downloadproxies():
                 'https://www.proxy-list.download/HTTP',
                 'https://www.advanced.name/freeproxy/8dd96814aa62bca283294c051/',
                 'https://www.xroxy.com/proxylist.php?port=&type=All_http&ssl=&country=&latency=&reliability=#table',
+                # Дополнительные источники
                 'https://proxygather.com/',
                 'https://www.proxynova.com/proxy-server-list/',
                 'https://www.proxy-listen.de/Proxy/Proxyliste.html',
                 'https://www.anonymous-proxy-servers.net/',
                 'https://www.cool-proxy.net/',
-                
+                # Продолжайте добавлять при необходимости
             ]
         }
         self.proxy_dict = {'socks4': [], 'socks5': [], 'http': []}
-        pass
+        self.country_proxies = defaultdict(list)
+        self.executor = ThreadPoolExecutor(max_workers=20000)
 
-    def get_special1(self):
-        proxy_list = []
+    def ip_to_country(self, ip):
         try:
-            r = requests.get("https://www.socks-proxy.net/",timeout=5)
-            part = str(r.text)
-            part = part.split("<tbody>")
-            part = part[1].split("</tbody>")
-            part = part[0].split("<tr><td>")
-            proxies = ""
-            for proxy in part:
-                proxy = proxy.split("</td><td>")
-                try:
-                    if proxies != '':
-                        proxies = proxies + proxy[0] + ":" + proxy[1] + "\n"
-                        if proxies != '':
-                            proxy_list += proxies.split('\n')
-                except:
-                    pass
-                
-            return proxy_list
-        except:
-            return []
+            response = requests.get(f'http://ip-api.com/json/{ip}?fields=country', timeout=5)
+            response.raise_for_status()
+            data = response.json()
+            return data.get('country', 'Unknown')
+        except requests.RequestException:
+            return 'Unknown'
 
-    def get_special2(self):
-        for i in range(json.loads(requests.get('https://proxylist.geonode.com/api/proxy-summary').text)["summary"]['proxiesOnline'] // 100):
-            proxies = json.loads(requests.get('https://proxylist.geonode.com/api/proxy-list?limit=100&page={}&sort_by=lastChecked&sort_type=desc'.format(i)).text)
-            for p in proxies['data']:
-                if p['protocols'][0] == 'https':
-                    protocol = 'http'
-                else:
-                    protocol = p['protocols'][0]
-                self.proxy_dict[protocol] .append('{}:{}'.format(p['ip'],p['port']))
-        return
+    def sort_proxies_by_country(self):
+        futures = []
+        for proxy_type, proxies in self.proxy_dict.items():
+            for proxy in proxies:
+                ip = proxy.split(':')[0]
+                futures.append(self.executor.submit(self.ip_to_country, ip))
+
+        for future in as_completed(futures):
+            country = future.result()
+            if country != 'Unknown':
+                self.country_proxies[country].append(proxy)
+
+        print("Sorted proxies by country.")
+
+    def save_raw_proxies(self):
+        os.makedirs('proxies', exist_ok=True)
+        for proxy_type, proxies in self.proxy_dict.items():
+            with open(f'proxies/{proxy_type}.txt', 'w') as f:
+                for proxy in proxies:
+                    f.write(proxy + '\n')
+            print(f"Saved raw {proxy_type} proxies.")
+
+    def save_cleaned_proxies(self):
+        os.makedirs('cleaned_proxies', exist_ok=True)
+        for proxy_type, proxies in self.proxy_dict.items():
+            with open(f'cleaned_proxies/{proxy_type}.txt', 'w') as f:
+                for proxy in proxies:
+                    f.write(proxy + '\n')
+            print(f"Saved cleaned {proxy_type} proxies.")
 
     def get(self):
-        self.proxy_dict['socks4'] += self.get_special1()
-        #self.get_special2()
-        self.get_extra()
+        futures = []
+        for proxy_type, apis in self.api.items():
+            for api in apis:
+                futures.append(self.executor.submit(self.fetch_proxies, proxy_type, api))
         
-        for type in ['socks4','socks5','http']:
-            for api in self.api[type]:
-                self.proxy_list = []
-                try:
-                    self.r = requests.get(api,timeout=5)
-                    if self.r.status_code == requests.codes.ok :
-                        self.proxy_list += re.findall('\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{2,5}',self.r.text)
-                        self.proxy_dict[type] += list(set(self.proxy_list))
-                        print('> Get {} {} ips from {}'.format(len(self.proxy_list),type,api))
-                except:
-                    pass
+        for future in as_completed(futures):
+            future.result()
 
-        print('> Get {} proxies done'.format(type))
+        self.save_raw_proxies()
 
-    def get_extra(self):
-        for q in range(20):
-            self.count = {'http':0,'socks5':0}
-            self.day = datetime.date.today() + datetime.timedelta(-q)
-            self.r = requests.get('https://checkerproxy.net/api/archive/{}-{}-{}'.format(self.day.year,self.day.month,self.day.day))
-            if self.r.text != '[]': 
-                self.json_result = json.loads(self.r.text)
-                for i in self.json_result:
-                    if re.match('172.[0-9][0-9].0.1',i['ip']):
-                        if i['type'] in [1,2] and i['addr'] in self.proxy_dict['http']:
-                            self.proxy_dict['http'].remove(i['addr'])
-                        if i['type'] == 4 and i['addr'] in self.proxy_dict['socks5']:
-                            self.proxy_dict['socks5'].remove(i['addr'])
-                    else:
-                        if i['type'] in [1,2] :
-                            self.count['http'] += 1
-                            self.proxy_dict['http'].append(i['addr'])
-                        if i['type'] == 4 :
-                            self.count['socks5'] += 1
-                            self.proxy_dict['socks5'].append(i['addr'])
-                print('> Get {} http proxy ips from {}'.format(self.count['http'],self.r.url))
-                print('> Get {} socks5 proxy ips from {}'.format(self.count['socks5'],self.r.url))
-        
         self.proxy_dict['socks4'] = list(set(self.proxy_dict['socks4']))
         self.proxy_dict['socks5'] = list(set(self.proxy_dict['socks5']))
         self.proxy_dict['http'] = list(set(self.proxy_dict['http']))
         
-        print('> Get extra proxies done')
+        self.save_cleaned_proxies()
 
-    def save(self):
-        for type in ['socks4','socks5','http']:
-            self.proxy_dict[type] = list(set(self.proxy_dict[type]))
-            self.out_file = 'proxies/{}.txt'.format(type)
-            f = open(self.out_file,'w')
-            for i in self.proxy_dict[type]:
-                if '#' in i or i == '\n':
-                    self.proxy_dict[type].remove(i)
-                else:
-                    f.write(i + '\n')
-            print("> Have already saved {} proxies list as ".format(len(self.proxy_dict[type])) + self.out_file)
+        print('> Get proxies done.')
 
-    def save_all(self):
-        with open('proxies/all.txt', 'w') as all_file:
-            for proxy_type in self.proxy_dict:
-                for proxy in self.proxy_dict[proxy_type]:
-                    all_file.write(proxy + '\n')
-        print("> Have already saved all proxies list as proxies/all.txt")
-        
+    def fetch_proxies(self, proxy_type, api):
+        try:
+            r = requests.get(api, timeout=5)
+            if r.status_code == 200:
+                proxy_list = re.findall(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{2,5}', r.text)
+                self.proxy_dict[proxy_type].extend(proxy_list)
+                print(f'> Get {len(proxy_list)} {proxy_type} ips from {api}')
+        except requests.RequestException:
+            pass
+
+    def save_proxies_by_country(self):
+        os.makedirs('world', exist_ok=True)
+        for country, proxies in self.country_proxies.items():
+            country_dir = os.path.join('world', country)
+            os.makedirs(country_dir, exist_ok=True)
+            with open(os.path.join(country_dir, 'proxies.txt'), 'w') as f:
+                for proxy in proxies:
+                    f.write(proxy + '\n')
+            print(f"Saved proxies for {country} in {country_dir}")
+
+    def execute(self):
+        self.get()
+        self.sort_proxies_by_country()
+        self.save_proxies_by_country()
+
 if __name__ == '__main__':
     d = Downloadproxies()
-    d.get()
-    d.save()
-    d.save_all()
+    d.execute()
