@@ -121,19 +121,27 @@ class Downloadproxies():
         print("Sorted proxies by country.")
 
     def get(self):
-        futures = []
-        for proxy_type, apis in self.api.items():
-            for api in apis:
-                futures.append(self.executor.submit(self.fetch_proxies, proxy_type, api))
-        
-        for future in as_completed(futures):
+    futures = []
+    for proxy_type, apis in self.api.items():
+        for api in apis:
+            futures.append(self.executor.submit(self.fetch_proxies, proxy_type, api))
+    
+    for future in as_completed(futures):
+        try:
             future.result()  # Ждем, пока все запросы завершатся
+        except Exception as e:
+            print(f"Error fetching proxies: {e}")
 
-        self.proxy_dict['socks4'] = list(set(self.proxy_dict['socks4']))
-        self.proxy_dict['socks5'] = list(set(self.proxy_dict['socks5']))
-        self.proxy_dict['http'] = list(set(self.proxy_dict['http']))
+    # Вывод количества полученных прокси
+    for proxy_type in self.proxy_dict:
+        print(f"Total {proxy_type} proxies fetched: {len(self.proxy_dict[proxy_type])}")
 
-        print('> Get proxies done.')
+    self.proxy_dict['socks4'] = list(set(self.proxy_dict['socks4']))
+    self.proxy_dict['socks5'] = list(set(self.proxy_dict['socks5']))
+    self.proxy_dict['http'] = list(set(self.proxy_dict['http']))
+
+    print('> Get proxies done.')
+
 
     def fetch_proxies(self, proxy_type, api):
         try:
