@@ -113,7 +113,7 @@ class Downloadproxies():
                 ip = proxy.split(':')[0]
                 futures.append(self.executor.submit(self.ip_to_country, ip))
 
-                for future in as_completed(futures):
+        for future in as_completed(futures):
             country = future.result()
             if country != 'Unknown':
                 self.country_proxies[country].append(proxy)
