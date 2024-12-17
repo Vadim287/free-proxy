@@ -84,7 +84,6 @@ class Downloadproxies():
             ]
         }
         self.proxy_dict = {'socks4': set(), 'socks5': set(), 'http': set()}
-        self.country_proxies = defaultdict(list)
         self.executor = ThreadPoolExecutor(max_workers=200)
 
     def fetch_proxies(self, proxy_type, api):
@@ -97,33 +96,39 @@ class Downloadproxies():
         except requests.RequestException:
             pass
 
-    def ip_to_country(self, ip):
-        try:
-            response = requests.get(f'http://ip-api.com/json/{ip}?fields=country', timeout=5)
-            response.raise_for_status()
-            data = response.json()
-            return data.get('country', 'Unknown')
-        except requests.RequestException:
-            return 'Unknown'
+    def ip_to_country(self, proxies, proxy_type):
+        country_proxies = defaultdict(list)
+        for proxy in proxies:
+            try:
+                ip = proxy.split(':')[0]
+                response = requests.get(f'http://ip-api.com/json/{ip}?fields=country', timeout=5)
+                response.raise_for_status()
+                data = response.json()
+                country = data.get('country', 'Unknown')
+                if country != 'Unknown':
+                    country_proxies[country].append(f'{proxy} ({proxy_type})')
+            except requests.RequestException:
+                continue
+        return country_proxies
 
     def sort_proxies_by_country(self):
         futures = []
         for proxy_type, proxies in self.proxy_dict.items():
-            for proxy in proxies:
-                ip = proxy.split(':')[0]
-                futures.append(self.executor.submit(self.ip_to_country, ip))
+            if proxies:
+                futures.append(self.executor.submit(self.ip_to_country, proxies, proxy_type))
         
+        combined_country_proxies = defaultdict(list)
         for future in as_completed(futures):
-            country = future.result()
-            proxy = future.proxy
-            if country != 'Unknown':
-                self.country_proxies[country].append(f'{proxy} ({proxy_type})')
+            country_proxies = future.result()
+            for country, proxies in country_proxies.items():
+                combined_country_proxies[country].extend(proxies)
         
         print("Sorted proxies by country.")
+        return combined_country_proxies
 
-    def save_proxies_by_country(self):
+    def save_proxies_by_country(self, country_proxies):
         os.makedirs('world', exist_ok=True)
-        for country, proxies in self.country_proxies.items():
+        for country, proxies in country_proxies.items():
             proxies = list(set(proxies))  # Удаляем дубликаты
             country_dir = os.path.join('world', country)
             os.makedirs(country_dir, exist_ok=True)
@@ -156,7 +161,7 @@ class Downloadproxies():
 
         # Выводим информацию о сохранении
         for proxy_type in file_paths:
-            if proxy_type != 'all':  # Мы уже вывели информацию о общем файле
+            if proxy_type != 'all':
                 print(f"Saved {proxy_type} proxies in {file_paths[proxy_type]}")
         print(f"Saved all proxies in {file_paths['all']}")
 
@@ -172,14 +177,13 @@ class Downloadproxies():
             except Exception as e:
                 print(f"Error fetching proxies: {e}")
 
-        # Показываем количество полученных прокси
         for proxy_type in self.proxy_dict:
             print(f"Total {proxy_type} proxies fetched: {len(self.proxy_dict[proxy_type])}")
 
     def execute(self):
         self.get()
-        self.sort_proxies_by_country()
-        self.save_proxies_by_country()
+        country_proxies = self.sort_proxies_by_country()
+        self.save_proxies_by_country(country_proxies)
         self.save_all_proxies()
 
 if __name__ == '__main__':
