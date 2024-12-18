@@ -2,7 +2,22 @@ import asyncio
 import aiohttp
 import re
 import os
+import sys
 from collections import defaultdict
+import geoip2.database
+from bs4 import BeautifulSoup
+import logging
+
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stdout),
+        logging.FileHandler('download_proxies.log', encoding='utf-8')
+    ]
+)
+logger = logging.getLogger(__name__)
 
 class DownloadProxies:
     def __init__(self) -> None:
@@ -58,7 +73,7 @@ class DownloadProxies:
                 'https://raw.githubusercontent.com/officialputuid/KangProxy/KangProxy/https/https.txt',
                 'https://raw.githubusercontent.com/ObcbO/getproxy/master/file/http.txt',
                 'https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt',
-                'https://github.com/ObcbO/getproxy/blob/master/file/https.txt',
+                'https://raw.githubusercontent.com/ObcbO/getproxy/raw/master/file/https.txt',
                 'https://raw.githubusercontent.com/officialputuid/KangProxy/KangProxy/http/http.txt',
                 'https://raw.githubusercontent.com/TuanMinPay/live-proxy/master/http.txt',
                 'https://raw.githubusercontent.com/ProxyScraper/ProxyScraper/main/http.txt',
@@ -84,19 +99,96 @@ class DownloadProxies:
         }
         self.proxy_dict = defaultdict(set)
         self.country_proxies = defaultdict(list)
-        self.semaphore = asyncio.Semaphore(100) 
+       
+        self.semaphore = asyncio.Semaphore(500)
         self.ip_country_cache = {}
+        self.geoip_readers = self.setup_geoip()
+
+    def setup_geoip(self):
+        geoip_db_paths = {
+            'country': 'GeoLite2-Country.mmdb',
+            'city': 'GeoLite2-City.mmdb',
+            'asn': 'GeoLite2-ASN.mmdb'
+        }
+        download_urls = {
+            'country': [
+                'https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-Country.mmdb',
+                'https://git.io/GeoLite2-Country.mmdb'
+            ],
+            'city': [
+                'https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-City.mmdb',
+                'https://git.io/GeoLite2-City.mmdb'
+            ],
+            'asn': [
+                'https://github.com/P3TERX/GeoLite.mmdb/raw/download/GeoLite2-ASN.mmdb',
+                'https://git.io/GeoLite2-ASN.mmdb'
+            ]
+        }
+        readers = {}
+        for key, path in geoip_db_paths.items():
+            if not os.path.exists(path):
+                logger.info(f"Файл {path} не найден. Начало скачивания.")
+                success = self.download_geoip_database(key, path, download_urls[key])
+                if not success:
+                    logger.error(f"Не удалось скачать {path}. Завершение работы.")
+                    sys.exit(1)
+            try:
+                readers[key] = geoip2.database.Reader(path)
+                logger.info(f"Загружен {key} GeoIP database из {path}.")
+            except Exception as e:
+                logger.error(f"Ошибка загрузки {path}: {e}")
+                sys.exit(1)
+        return readers
+
+    def download_geoip_database(self, key, path, urls):
+        for url in urls:
+            try:
+                logger.info(f"Попытка скачать {path} с {url}")
+                response = requests.get(url, timeout=30)
+                if response.status_code == 200:
+                    with open(path, 'wb') as f:
+                        f.write(response.content)
+                    logger.info(f"Успешно скачан {path} с {url}")
+                    return True
+                else:
+                    logger.warning(f"Не удалось скачать {path} с {url}. Статус код: {response.status_code}")
+            except Exception as e:
+                logger.warning(f"Ошибка при скачивании {path} с {url}: {e}")
+        return False
 
     async def fetch_proxies(self, session, proxy_type, api):
         try:
-            async with session.get(api, timeout=10) as response:
-                if response.status == 200:
-                    text = await response.text()
-                    proxy_list = re.findall(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{2,5}', text)
-                    self.proxy_dict[proxy_type].update(proxy_list)
-                    print(f'> Get {len(proxy_list)} {proxy_type} ips from {api}')
+            async with self.semaphore:
+                async with session.get(api, timeout=15) as response:
+                    if response.status == 200:
+                        if any(domain in api for domain in ['spys.me', 'hidemy.name', 'proxynova.com', 'proxy-listen.de']):
+                            # Обработка HTML-страниц
+                            text = await response.text()
+                            proxy_list = self.parse_html_proxies(text)
+                        else:
+                            text = await response.text()
+                            proxy_list = re.findall(r'\d{1,3}(?:\.\d{1,3}){3}:\d{2,5}', text)
+                        if proxy_list:
+                            self.proxy_dict[proxy_type].update(proxy_list)
+                            logger.info(f"> Получено {len(proxy_list)} {proxy_type.upper()} прокси из {api}")
         except Exception as e:
-            print(f"Error fetching from {api}: {e}")
+            logger.error(f"Ошибка при загрузке из {api}: {e}")
+
+    def parse_html_proxies(self, html_text):
+        proxies = []
+        try:
+            soup = BeautifulSoup(html_text, 'html.parser')
+            # Пример для сайтов с таблицей прокси
+            for row in soup.find_all('tr'):
+                cols = row.find_all(['td', 'li'])
+                if cols:
+                    for col in cols:
+                        proxy = col.get_text(strip=True)
+                        if re.match(r'\d{1,3}(?:\.\d{1,3}){3}:\d{2,5}', proxy):
+                            proxies.append(proxy)
+        except Exception as e:
+            logger.error(f"Ошибка при парсинге HTML: {e}")
+        return proxies
 
     async def get_proxies(self):
         async with aiohttp.ClientSession() as session:
@@ -106,53 +198,69 @@ class DownloadProxies:
                     tasks.append(self.fetch_proxies(session, proxy_type, api))
             await asyncio.gather(*tasks)
 
-       
+        # Преобразование сетов в списки
         self.proxy_dict = {k: list(v) for k, v in self.proxy_dict.items()}
         for proxy_type in self.proxy_dict:
-            print(f"Total {proxy_type} proxies fetched: {len(self.proxy_dict[proxy_type])}")
+            logger.info(f"Всего {proxy_type.upper()} прокси получено: {len(self.proxy_dict[proxy_type])}")
 
-    async def ip_to_country(self, session, ip):
-        if ip in self.ip_country_cache:
-            return self.ip_country_cache[ip]
+    def ip_to_country_local(self, ip):
         try:
-            async with self.semaphore:
-                async with session.get(f'http://ip-api.com/json/{ip}?fields=country', timeout=5) as response:
-                    data = await response.json()
-                    country = data.get('country', 'Unknown')
-                    self.ip_country_cache[ip] = country
-                    return country
+            response = self.geoip_readers['country'].country(ip)
+            country = response.country.name or 'Unknown'
+            return country
+        except Exception:
+            return 'Unknown'
+
+    def ip_to_city_local(self, ip):
+        try:
+            response = self.geoip_readers['city'].city(ip)
+            city = response.city.name or 'Unknown'
+            return city
+        except Exception:
+            return 'Unknown'
+
+    def ip_to_asn_local(self, ip):
+        try:
+            response = self.geoip_readers['asn'].asn(ip)
+            asn = response.autonomous_system_organization or 'Unknown'
+            return asn
         except Exception:
             return 'Unknown'
 
     async def sort_proxies_by_country(self):
-        async with aiohttp.ClientSession() as session:
-            tasks = []
-            unique_ips = set(proxy.split(':')[0] for proxies in self.proxy_dict.values() for proxy in proxies)
-            for ip in unique_ips:
-                tasks.append(self.ip_to_country(session, ip))
-                    
-            countries = await asyncio.gather(*tasks)
+        loop = asyncio.get_event_loop()
+        unique_ips = set(proxy.split(':')[0] for proxies in self.proxy_dict.values() for proxy in proxies)
+        ip_to_country_map = {}
 
-            ip_to_country_map = {ip: country for ip, country in zip(unique_ips, countries)}
+        tasks = [loop.run_in_executor(None, self.ip_to_country_local, ip) for ip in unique_ips]
+        countries = await asyncio.gather(*tasks)
 
-            for proxy_type, proxies in self.proxy_dict.items():
-                for proxy in proxies:
-                    ip = proxy.split(':')[0]
-                    country = ip_to_country_map[ip]
-                    if country != 'Unknown':
-                        self.country_proxies[country].append(proxy)
+        ip_to_country_map = {ip: country for ip, country in zip(unique_ips, countries)}
 
-        print("Sorted proxies by country.")
+        for proxy_type, proxies in self.proxy_dict.items():
+            for proxy in proxies:
+                ip, port = proxy.split(':')
+                country = ip_to_country_map.get(ip, 'Unknown')
+                if country != 'Unknown':
+                    # Сохраняем кортеж (протокол, прокси)
+                    self.country_proxies[country].append((proxy_type, proxy))
+
+        logger.info("Прокси отсортированы по странам.")
 
     def save_proxies_by_country(self):
         os.makedirs('world', exist_ok=True)
         for country, proxies in self.country_proxies.items():
-            country_dir = os.path.join('world', country)
+            safe_country = re.sub(r'[\\/*?:"<>|]', "_", country)
+            country_dir = os.path.join('world', safe_country)
             os.makedirs(country_dir, exist_ok=True)
-            with open(os.path.join(country_dir, 'proxies.txt'), 'w') as f:
-                for proxy in proxies:
-                    f.write(proxy + '\n')
-            print(f"Saved proxies for {country} in {country_dir}")
+            file_path = os.path.join(country_dir, 'proxies.txt')
+            try:
+                with open(file_path, 'w') as f:
+                    for proxy_type, proxy in proxies:
+                        f.write(f"{proxy_type.upper()} {proxy}\n")
+                logger.info(f"Сохранены прокси для {country} в {country_dir}")
+            except Exception as e:
+                logger.error(f"Ошибка при сохранении прокси для {country}: {e}")
 
     def save_all_proxies(self):
         os.makedirs('proxies', exist_ok=True)
@@ -164,24 +272,82 @@ class DownloadProxies:
             'all': os.path.join('proxies', 'all.txt')
         }
 
-        with open(file_paths['all'], 'w') as all_file:
-            for proxy_type, proxies in self.proxy_dict.items():
+      
+        for proxy_type, proxies in self.proxy_dict.items():
+            try:
                 with open(file_paths[proxy_type], 'w') as type_file:
-                    for proxy in proxies:
-                        type_file.write(proxy + '\n')
-                        all_file.write(proxy + '\n')
+                    type_file.write('\n'.join(proxies))
+                logger.info(f"Сохранены {proxy_type.upper()} прокси в {file_paths[proxy_type]}")
+            except Exception as e:
+                logger.error(f"Ошибка при сохранении {proxy_type.upper()} прокси: {e}")
 
-        for proxy_type in file_paths:
-            if proxy_type != 'all':
-                print(f"Saved {proxy_type} proxies in {file_paths[proxy_type]}")
-        print(f"Saved all proxies in {file_paths['all']}")
+       
+        all_proxies = set()
+        for proxies in self.proxy_dict.values():
+            all_proxies.update(proxies)
+        try:
+            with open(file_paths['all'], 'w') as all_file:
+                all_file.write('\n'.join(all_proxies))
+            logger.info(f"Сохранены все прокси в {file_paths['all']}")
+        except Exception as e:
+            logger.error(f"Ошибка при сохранении всех прокси: {e}")
+
+    async def validate_proxy(self, session, proxy):
+        test_url = 'http://www.google.com'
+        try:
+            async with session.get(test_url, proxy=f'http://{proxy}', timeout=5):
+                return True
+        except:
+            return False
+
+    async def validate_single_proxy(self, session, proxy_type, proxy):
+        is_valid = await self.validate_proxy(session, proxy)
+        return proxy_type, proxy, is_valid
+
+    async def validate_proxies(self):
+        valid_proxies = defaultdict(set)
+        async with aiohttp.ClientSession() as session:
+            tasks = []
+            for proxy_type, proxies in self.proxy_dict.items():
+                for proxy in proxies:
+                    tasks.append(self.validate_single_proxy(session, proxy_type, proxy))
+            results = await asyncio.gather(*tasks)
+            for proxy_type, proxy, is_valid in results:
+                if is_valid:
+                    valid_proxies[proxy_type].add(proxy)
+        self.proxy_dict = valid_proxies
+        logger.info("Валидация прокси завершена.")
 
     async def execute(self):
+        logger.info("Начало загрузки прокси...")
         await self.get_proxies()
+        logger.info("Загрузка прокси завершена.")
+
+        logger.info("Начало сортировки прокси по странам...")
         await self.sort_proxies_by_country()
+
+        logger.info("Начало валидации прокси...")
+        await self.validate_proxies()
+
+        logger.info("Сортировка и валидация прокси завершены.")
+
+        logger.info("Начало сохранения прокси по странам...")
         self.save_proxies_by_country()
+
+        logger.info("Начало сохранения всех прокси...")
         self.save_all_proxies()
 
+        logger.info("Все операции завершены.")
+
+    def close(self):
+        for reader in self.geoip_readers.values():
+            reader.close()
+
 if __name__ == '__main__':
+    import requests  
+
     d = DownloadProxies()
-    asyncio.run(d.execute())
+    try:
+        asyncio.run(d.execute())
+    finally:
+        d.close()
