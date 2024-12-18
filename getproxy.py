@@ -1,11 +1,10 @@
-import json
-import requests
+import asyncio
+import aiohttp
 import re
 import os
 from collections import defaultdict
-from concurrent.futures import ThreadPoolExecutor, as_completed
 
-class Downloadproxies():
+class DownloadProxies:
     def __init__(self) -> None:
         self.api = {
             'socks4': [
@@ -83,53 +82,71 @@ class Downloadproxies():
                 'https://www.cool-proxy.net/',
             ]
         }
-        self.proxy_dict = {'socks4': set(), 'socks5': set(), 'http': set()}
-        self.executor = ThreadPoolExecutor(max_workers=200)
+        self.proxy_dict = defaultdict(set)
+        self.country_proxies = defaultdict(list)
+        self.semaphore = asyncio.Semaphore(100) 
+        self.ip_country_cache = {}
 
-    def fetch_proxies(self, proxy_type, api):
+    async def fetch_proxies(self, session, proxy_type, api):
         try:
-            r = requests.get(api, timeout=5)
-            if r.status_code == 200:
-                proxy_list = re.findall(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{2,5}', r.text)
-                self.proxy_dict[proxy_type].update(proxy_list)
-                print(f'> Get {len(proxy_list)} {proxy_type} ips from {api}')
-        except requests.RequestException:
-            pass
+            async with session.get(api, timeout=10) as response:
+                if response.status == 200:
+                    text = await response.text()
+                    proxy_list = re.findall(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{2,5}', text)
+                    self.proxy_dict[proxy_type].update(proxy_list)
+                    print(f'> Get {len(proxy_list)} {proxy_type} ips from {api}')
+        except Exception as e:
+            print(f"Error fetching from {api}: {e}")
 
-    def ip_to_country(self, proxies, proxy_type):
-        country_proxies = defaultdict(list)
-        for proxy in proxies:
-            try:
-                ip = proxy.split(':')[0]
-                response = requests.get(f'http://ip-api.com/json/{ip}?fields=country', timeout=5)
-                response.raise_for_status()
-                data = response.json()
-                country = data.get('country', 'Unknown')
-                if country != 'Unknown':
-                    country_proxies[country].append(f'{proxy} ({proxy_type})')
-            except requests.RequestException:
-                continue
-        return country_proxies
+    async def get_proxies(self):
+        async with aiohttp.ClientSession() as session:
+            tasks = []
+            for proxy_type, apis in self.api.items():
+                for api in apis:
+                    tasks.append(self.fetch_proxies(session, proxy_type, api))
+            await asyncio.gather(*tasks)
 
-    def sort_proxies_by_country(self):
-        futures = []
-        for proxy_type, proxies in self.proxy_dict.items():
-            if proxies:
-                futures.append(self.executor.submit(self.ip_to_country, proxies, proxy_type))
-        
-        combined_country_proxies = defaultdict(list)
-        for future in as_completed(futures):
-            country_proxies = future.result()
-            for country, proxies in country_proxies.items():
-                combined_country_proxies[country].extend(proxies)
-        
+       
+        self.proxy_dict = {k: list(v) for k, v in self.proxy_dict.items()}
+        for proxy_type in self.proxy_dict:
+            print(f"Total {proxy_type} proxies fetched: {len(self.proxy_dict[proxy_type])}")
+
+    async def ip_to_country(self, session, ip):
+        if ip in self.ip_country_cache:
+            return self.ip_country_cache[ip]
+        try:
+            async with self.semaphore:
+                async with session.get(f'http://ip-api.com/json/{ip}?fields=country', timeout=5) as response:
+                    data = await response.json()
+                    country = data.get('country', 'Unknown')
+                    self.ip_country_cache[ip] = country
+                    return country
+        except Exception:
+            return 'Unknown'
+
+    async def sort_proxies_by_country(self):
+        async with aiohttp.ClientSession() as session:
+            tasks = []
+            unique_ips = set(proxy.split(':')[0] for proxies in self.proxy_dict.values() for proxy in proxies)
+            for ip in unique_ips:
+                tasks.append(self.ip_to_country(session, ip))
+                    
+            countries = await asyncio.gather(*tasks)
+
+            ip_to_country_map = {ip: country for ip, country in zip(unique_ips, countries)}
+
+            for proxy_type, proxies in self.proxy_dict.items():
+                for proxy in proxies:
+                    ip = proxy.split(':')[0]
+                    country = ip_to_country_map[ip]
+                    if country != 'Unknown':
+                        self.country_proxies[country].append(proxy)
+
         print("Sorted proxies by country.")
-        return combined_country_proxies
 
-    def save_proxies_by_country(self, country_proxies):
+    def save_proxies_by_country(self):
         os.makedirs('world', exist_ok=True)
-        for country, proxies in country_proxies.items():
-            proxies = list(set(proxies))  # Удаляем дубликаты
+        for country, proxies in self.country_proxies.items():
             country_dir = os.path.join('world', country)
             os.makedirs(country_dir, exist_ok=True)
             with open(os.path.join(country_dir, 'proxies.txt'), 'w') as f:
@@ -140,7 +157,6 @@ class Downloadproxies():
     def save_all_proxies(self):
         os.makedirs('proxies', exist_ok=True)
 
-        # Создаем файлы для каждого типа прокси
         file_paths = {
             'http': os.path.join('proxies', 'http.txt'),
             'socks4': os.path.join('proxies', 'socks4.txt'),
@@ -148,44 +164,24 @@ class Downloadproxies():
             'all': os.path.join('proxies', 'all.txt')
         }
 
-        all_proxies = set()  # Сбор всех уникальных прокси
-        for proxy_type, proxies in self.proxy_dict.items():
-            with open(file_paths[proxy_type], 'w') as type_file:
-                for proxy in proxies:
-                    type_file.write(proxy + '\n')
-                    all_proxies.add(proxy)
-
         with open(file_paths['all'], 'w') as all_file:
-            for proxy in all_proxies:
-                all_file.write(proxy + '\n')
+            for proxy_type, proxies in self.proxy_dict.items():
+                with open(file_paths[proxy_type], 'w') as type_file:
+                    for proxy in proxies:
+                        type_file.write(proxy + '\n')
+                        all_file.write(proxy + '\n')
 
-        # Выводим информацию о сохранении
         for proxy_type in file_paths:
             if proxy_type != 'all':
                 print(f"Saved {proxy_type} proxies in {file_paths[proxy_type]}")
         print(f"Saved all proxies in {file_paths['all']}")
 
-    def get(self):
-        futures = []
-        for proxy_type, apis in self.api.items():
-            for api in apis:
-                futures.append(self.executor.submit(self.fetch_proxies, proxy_type, api))
-
-        for future in as_completed(futures):
-            try:
-                future.result()
-            except Exception as e:
-                print(f"Error fetching proxies: {e}")
-
-        for proxy_type in self.proxy_dict:
-            print(f"Total {proxy_type} proxies fetched: {len(self.proxy_dict[proxy_type])}")
-
-    def execute(self):
-        self.get()
-        country_proxies = self.sort_proxies_by_country()
-        self.save_proxies_by_country(country_proxies)
+    async def execute(self):
+        await self.get_proxies()
+        await self.sort_proxies_by_country()
+        self.save_proxies_by_country()
         self.save_all_proxies()
 
 if __name__ == '__main__':
-    d = Downloadproxies()
-    d.execute()
+    d = DownloadProxies()
+    asyncio.run(d.execute())
