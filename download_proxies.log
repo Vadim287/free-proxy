@@ -232,3 +232,229 @@
 2024-12-18 13:48:50,265 - INFO - Сохранены SOCKS4 прокси в proxies/socks4.txt
 2024-12-18 13:48:50,266 - INFO - Сохранены все прокси в proxies/all.txt
 2024-12-18 13:48:50,266 - INFO - Все операции завершены.
+2024-12-18 13:50:10,038 - INFO - Загружен country GeoIP database из GeoLite2-Country.mmdb.
+2024-12-18 13:50:10,039 - INFO - Загружен city GeoIP database из GeoLite2-City.mmdb.
+2024-12-18 13:50:10,039 - INFO - Загружен asn GeoIP database из GeoLite2-ASN.mmdb.
+2024-12-18 13:50:10,039 - INFO - Начало загрузки прокси...
+2024-12-18 13:50:10,145 - INFO - > Получено 9444 SOCKS4 прокси из https://raw.githubusercontent.com/ErcinDedeoglu/proxies/main/proxies/socks4.txt
+2024-12-18 13:50:10,146 - INFO - > Получено 3355 HTTP прокси из https://raw.githubusercontent.com/ErcinDedeoglu/proxies/main/proxies/https.txt
+2024-12-18 13:50:10,155 - INFO - > Получено 8921 HTTP прокси из https://raw.githubusercontent.com/TuanMinPay/live-proxy/master/http.txt
+2024-12-18 13:50:10,158 - INFO - > Получено 5448 SOCKS5 прокси из https://raw.githubusercontent.com/TuanMinPay/live-proxy/master/socks5.txt
+2024-12-18 13:50:10,159 - INFO - > Получено 2385 SOCKS5 прокси из https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks5.txt
+2024-12-18 13:50:10,161 - INFO - > Получено 3166 HTTP прокси из https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt
+2024-12-18 13:50:10,175 - INFO - > Получено 28019 HTTP прокси из https://raw.githubusercontent.com/ErcinDedeoglu/proxies/main/proxies/http.txt
+2024-12-18 13:50:10,214 - INFO - > Получено 3166 HTTP прокси из https://raw.githubusercontent.com/ProxyScraper/ProxyScraper/main/http.txt
+2024-12-18 13:50:10,215 - INFO - > Получено 2684 SOCKS4 прокси из https://raw.githubusercontent.com/ProxyScraper/ProxyScraper/main/socks4.txt
+2024-12-18 13:50:10,217 - INFO - > Получено 2891 HTTP прокси из https://raw.githubusercontent.com/officialputuid/KangProxy/KangProxy/http/http.txt
+2024-12-18 13:50:10,224 - INFO - > Получено 300 SOCKS5 прокси из https://www.socks-proxy.net/
+2024-12-18 13:50:10,226 - INFO - > Получено 300 SOCKS4 прокси из https://www.socks-proxy.net/
+2024-12-18 13:50:10,232 - INFO - > Получено 3954 HTTP прокси из https://raw.githubusercontent.com/officialputuid/KangProxy/KangProxy/https/https.txt
+2024-12-18 13:50:10,235 - INFO - > Получено 300 SOCKS4 прокси из https://www.socks-proxy.net/
+2024-12-18 13:50:10,238 - INFO - > Получено 7606 SOCKS4 прокси из https://raw.githubusercontent.com/officialputuid/KangProxy/KangProxy/socks4/socks4.txt
+2024-12-18 13:50:10,241 - INFO - > Получено 5642 HTTP прокси из https://raw.githubusercontent.com/ObcbO/getproxy/master/file/http.txt
+2024-12-18 13:50:10,245 - INFO - > Получено 7415 SOCKS5 прокси из https://raw.githubusercontent.com/ObcbO/getproxy/master/file/socks5.txt
+2024-12-18 13:50:10,246 - INFO - > Получено 2976 SOCKS5 прокси из https://raw.githubusercontent.com/officialputuid/KangProxy/KangProxy/socks5/socks5.txt
+2024-12-18 13:50:10,257 - INFO - > Получено 300 SOCKS5 прокси из https://www.socks-proxy.net/
+2024-12-18 13:50:10,259 - INFO - > Получено 5167 SOCKS4 прокси из https://raw.githubusercontent.com/ObcbO/getproxy/master/file/socks4.txt
+2024-12-18 13:50:10,269 - INFO - > Получено 6716 SOCKS4 прокси из https://raw.githubusercontent.com/TuanMinPay/live-proxy/master/socks4.txt
+2024-12-18 13:50:10,283 - INFO - > Получено 2684 SOCKS4 прокси из https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks4.txt
+2024-12-18 13:50:10,301 - INFO - > Получено 2385 SOCKS5 прокси из https://raw.githubusercontent.com/ProxyScraper/ProxyScraper/main/socks5.txt
+2024-12-18 13:50:10,302 - INFO - > Получено 90 HTTP прокси из https://www.proxy-list.download/api/v1/get?type=http
+2024-12-18 13:50:10,302 - INFO - > Получено 102 SOCKS5 прокси из https://www.proxy-list.download/api/v1/get?type=socks5
+2024-12-18 13:50:10,311 - INFO - > Получено 1800 SOCKS4 прокси из https://www.proxy-list.download/api/v1/get?type=socks4
+2024-12-18 13:50:10,318 - INFO - > Получено 3061 SOCKS5 прокси из https://raw.githubusercontent.com/ErcinDedeoglu/proxies/main/proxies/socks5.txt
+2024-12-18 13:50:10,322 - INFO - > Получено 100 HTTP прокси из https://www.sslproxies.org/
+2024-12-18 13:50:10,325 - INFO - > Получено 100 SOCKS4 прокси из https://www.sslproxies.org/
+2024-12-18 13:50:10,345 - ERROR - Ошибка при загрузке из https://www.socks24.org/: Cannot connect to host www.socks24.org:443 ssl:default [None]
+2024-12-18 13:50:10,363 - ERROR - Ошибка при загрузке из https://www.usaproxy.org/: Cannot connect to host www.usaproxy.org:443 ssl:default [Name or service not known]
+2024-12-18 13:50:10,375 - INFO - > Получено 300 HTTP прокси из https://free-proxy-list.net/
+2024-12-18 13:50:10,377 - ERROR - Ошибка при загрузке из https://www.proxymanager.org/: Cannot connect to host www.proxymanager.org:443 ssl:default [Name or service not known]
+2024-12-18 13:50:10,629 - INFO - > Получено 200 HTTP прокси из https://www.us-proxy.org/
+2024-12-18 13:50:10,638 - INFO - > Получено 675 HTTP прокси из https://api.proxyscrape.com?request=getproxies&proxytype=http
+2024-12-18 13:50:10,780 - ERROR - Ошибка при загрузке из https://www.freeproxylist.net/: Cannot connect to host www.freeproxylist.net:443 ssl:default [[SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1007)]
+2024-12-18 13:50:10,799 - ERROR - Ошибка при загрузке из https://www.anonymous-proxy-servers.net/: Cannot connect to host www.anonymous-proxy-servers.net:443 ssl:True [SSLCertVerificationError: (1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1007)')]
+2024-12-18 13:50:10,889 - ERROR - Ошибка при загрузке из https://proxygather.com/: Server disconnected
+2024-12-18 13:50:11,178 - ERROR - Ошибка при загрузке из https://premproxy.com/socks-list/: Cannot connect to host premproxy.com:443 ssl:True [SSLCertVerificationError: (1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1007)')]
+2024-12-18 13:50:11,346 - ERROR - Ошибка при загрузке из https://sockslist.net/: Server disconnected
+2024-12-18 13:50:25,976 - ERROR - Ошибка при загрузке из https://www.xroxy.com/proxylist.php?port=&type=All_http&ssl=&country=&latency=&reliability=#table: 
+2024-12-18 13:50:25,982 - INFO - Всего SOCKS4 прокси получено: 14167
+2024-12-18 13:50:25,982 - INFO - Всего HTTP прокси получено: 33386
+2024-12-18 13:50:25,982 - INFO - Всего SOCKS5 прокси получено: 10690
+2024-12-18 13:50:25,982 - INFO - Загрузка прокси завершена.
+2024-12-18 13:50:25,982 - INFO - Начало сортировки прокси по странам...
+2024-12-18 13:50:29,123 - INFO - Прокси отсортированы по странам.
+2024-12-18 13:50:29,125 - INFO - Начало валидации прокси...
+2024-12-18 13:50:43,007 - INFO - Валидация прокси завершена.
+2024-12-18 13:50:43,018 - INFO - Сортировка и валидация прокси завершены.
+2024-12-18 13:50:43,018 - INFO - Начало сохранения прокси по странам...
+2024-12-18 13:50:43,019 - INFO - Сохранены прокси для India в world/India
+2024-12-18 13:50:43,020 - INFO - Сохранены прокси для Bangladesh в world/Bangladesh
+2024-12-18 13:50:43,021 - INFO - Сохранены прокси для Hong Kong в world/Hong Kong
+2024-12-18 13:50:43,021 - INFO - Сохранены прокси для Egypt в world/Egypt
+2024-12-18 13:50:43,024 - INFO - Сохранены прокси для United States в world/United States
+2024-12-18 13:50:43,025 - INFO - Сохранены прокси для Spain в world/Spain
+2024-12-18 13:50:43,025 - INFO - Сохранены прокси для Argentina в world/Argentina
+2024-12-18 13:50:43,025 - INFO - Сохранены прокси для Lithuania в world/Lithuania
+2024-12-18 13:50:43,026 - INFO - Сохранены прокси для France в world/France
+2024-12-18 13:50:43,027 - INFO - Сохранены прокси для Brazil в world/Brazil
+2024-12-18 13:50:43,028 - INFO - Сохранены прокси для Venezuela в world/Venezuela
+2024-12-18 13:50:43,028 - INFO - Сохранены прокси для Serbia в world/Serbia
+2024-12-18 13:50:43,029 - INFO - Сохранены прокси для Germany в world/Germany
+2024-12-18 13:50:43,029 - INFO - Сохранены прокси для Australia в world/Australia
+2024-12-18 13:50:43,030 - INFO - Сохранены прокси для Ecuador в world/Ecuador
+2024-12-18 13:50:43,031 - INFO - Сохранены прокси для China в world/China
+2024-12-18 13:50:43,031 - INFO - Сохранены прокси для Chile в world/Chile
+2024-12-18 13:50:43,032 - INFO - Сохранены прокси для Russia в world/Russia
+2024-12-18 13:50:43,032 - INFO - Сохранены прокси для Kosovo в world/Kosovo
+2024-12-18 13:50:43,033 - INFO - Сохранены прокси для Ukraine в world/Ukraine
+2024-12-18 13:50:43,033 - INFO - Сохранены прокси для South Korea в world/South Korea
+2024-12-18 13:50:43,033 - INFO - Сохранены прокси для Palestine в world/Palestine
+2024-12-18 13:50:43,034 - INFO - Сохранены прокси для Peru в world/Peru
+2024-12-18 13:50:43,035 - INFO - Сохранены прокси для Indonesia в world/Indonesia
+2024-12-18 13:50:43,036 - INFO - Сохранены прокси для Iran в world/Iran
+2024-12-18 13:50:43,037 - INFO - Сохранены прокси для The Netherlands в world/The Netherlands
+2024-12-18 13:50:43,037 - INFO - Сохранены прокси для Philippines в world/Philippines
+2024-12-18 13:50:43,037 - INFO - Сохранены прокси для Botswana в world/Botswana
+2024-12-18 13:50:43,038 - INFO - Сохранены прокси для Colombia в world/Colombia
+2024-12-18 13:50:43,039 - INFO - Сохранены прокси для Thailand в world/Thailand
+2024-12-18 13:50:43,039 - INFO - Сохранены прокси для Türkiye в world/Türkiye
+2024-12-18 13:50:43,040 - INFO - Сохранены прокси для United Kingdom в world/United Kingdom
+2024-12-18 13:50:43,040 - INFO - Сохранены прокси для Romania в world/Romania
+2024-12-18 13:50:43,041 - INFO - Сохранены прокси для Bulgaria в world/Bulgaria
+2024-12-18 13:50:43,041 - INFO - Сохранены прокси для South Africa в world/South Africa
+2024-12-18 13:50:43,042 - INFO - Сохранены прокси для Canada в world/Canada
+2024-12-18 13:50:43,043 - INFO - Сохранены прокси для Singapore в world/Singapore
+2024-12-18 13:50:43,044 - INFO - Сохранены прокси для Japan в world/Japan
+2024-12-18 13:50:43,044 - INFO - Сохранены прокси для Guatemala в world/Guatemala
+2024-12-18 13:50:43,044 - INFO - Сохранены прокси для Cambodia в world/Cambodia
+2024-12-18 13:50:43,045 - INFO - Сохранены прокси для Czechia в world/Czechia
+2024-12-18 13:50:43,045 - INFO - Сохранены прокси для United Arab Emirates в world/United Arab Emirates
+2024-12-18 13:50:43,045 - INFO - Сохранены прокси для Vietnam в world/Vietnam
+2024-12-18 13:50:43,046 - INFO - Сохранены прокси для Cyprus в world/Cyprus
+2024-12-18 13:50:43,046 - INFO - Сохранены прокси для Mexico в world/Mexico
+2024-12-18 13:50:43,047 - INFO - Сохранены прокси для Poland в world/Poland
+2024-12-18 13:50:43,047 - INFO - Сохранены прокси для Taiwan в world/Taiwan
+2024-12-18 13:50:43,047 - INFO - Сохранены прокси для Costa Rica в world/Costa Rica
+2024-12-18 13:50:43,047 - INFO - Сохранены прокси для Burundi в world/Burundi
+2024-12-18 13:50:43,048 - INFO - Сохранены прокси для Tanzania в world/Tanzania
+2024-12-18 13:50:43,048 - INFO - Сохранены прокси для Ghana в world/Ghana
+2024-12-18 13:50:43,048 - INFO - Сохранены прокси для Albania в world/Albania
+2024-12-18 13:50:43,048 - INFO - Сохранены прокси для Iraq в world/Iraq
+2024-12-18 13:50:43,049 - INFO - Сохранены прокси для Sweden в world/Sweden
+2024-12-18 13:50:43,049 - INFO - Сохранены прокси для Hungary в world/Hungary
+2024-12-18 13:50:43,049 - INFO - Сохранены прокси для Kenya в world/Kenya
+2024-12-18 13:50:43,049 - INFO - Сохранены прокси для Switzerland в world/Switzerland
+2024-12-18 13:50:43,050 - INFO - Сохранены прокси для Latvia в world/Latvia
+2024-12-18 13:50:43,050 - INFO - Сохранены прокси для Senegal в world/Senegal
+2024-12-18 13:50:43,050 - INFO - Сохранены прокси для Georgia в world/Georgia
+2024-12-18 13:50:43,050 - INFO - Сохранены прокси для Slovakia в world/Slovakia
+2024-12-18 13:50:43,051 - INFO - Сохранены прокси для Nepal в world/Nepal
+2024-12-18 13:50:43,051 - INFO - Сохранены прокси для Azerbaijan в world/Azerbaijan
+2024-12-18 13:50:43,051 - INFO - Сохранены прокси для Italy в world/Italy
+2024-12-18 13:50:43,051 - INFO - Сохранены прокси для Yemen в world/Yemen
+2024-12-18 13:50:43,052 - INFO - Сохранены прокси для Malaysia в world/Malaysia
+2024-12-18 13:50:43,052 - INFO - Сохранены прокси для Dominican Republic в world/Dominican Republic
+2024-12-18 13:50:43,052 - INFO - Сохранены прокси для Austria в world/Austria
+2024-12-18 13:50:43,053 - INFO - Сохранены прокси для Bhutan в world/Bhutan
+2024-12-18 13:50:43,053 - INFO - Сохранены прокси для Belgium в world/Belgium
+2024-12-18 13:50:43,053 - INFO - Сохранены прокси для Nicaragua в world/Nicaragua
+2024-12-18 13:50:43,053 - INFO - Сохранены прокси для Maldives в world/Maldives
+2024-12-18 13:50:43,053 - INFO - Сохранены прокси для Nigeria в world/Nigeria
+2024-12-18 13:50:43,054 - INFO - Сохранены прокси для Myanmar в world/Myanmar
+2024-12-18 13:50:43,054 - INFO - Сохранены прокси для Kazakhstan в world/Kazakhstan
+2024-12-18 13:50:43,054 - INFO - Сохранены прокси для Bosnia and Herzegovina в world/Bosnia and Herzegovina
+2024-12-18 13:50:43,054 - INFO - Сохранены прокси для Saudi Arabia в world/Saudi Arabia
+2024-12-18 13:50:43,055 - INFO - Сохранены прокси для Mongolia в world/Mongolia
+2024-12-18 13:50:43,055 - INFO - Сохранены прокси для DR Congo в world/DR Congo
+2024-12-18 13:50:43,055 - INFO - Сохранены прокси для Uzbekistan в world/Uzbekistan
+2024-12-18 13:50:43,055 - INFO - Сохранены прокси для Greece в world/Greece
+2024-12-18 13:50:43,056 - INFO - Сохранены прокси для Paraguay в world/Paraguay
+2024-12-18 13:50:43,056 - INFO - Сохранены прокси для Honduras в world/Honduras
+2024-12-18 13:50:43,056 - INFO - Сохранены прокси для Moldova в world/Moldova
+2024-12-18 13:50:43,056 - INFO - Сохранены прокси для Zimbabwe в world/Zimbabwe
+2024-12-18 13:50:43,057 - INFO - Сохранены прокси для Finland в world/Finland
+2024-12-18 13:50:43,057 - INFO - Сохранены прокси для Lesotho в world/Lesotho
+2024-12-18 13:50:43,057 - INFO - Сохранены прокси для Congo Republic в world/Congo Republic
+2024-12-18 13:50:43,057 - INFO - Сохранены прокси для Croatia в world/Croatia
+2024-12-18 13:50:43,058 - INFO - Сохранены прокси для Lebanon в world/Lebanon
+2024-12-18 13:50:43,058 - INFO - Сохранены прокси для Burkina Faso в world/Burkina Faso
+2024-12-18 13:50:43,058 - INFO - Сохранены прокси для Seychelles в world/Seychelles
+2024-12-18 13:50:43,058 - INFO - Сохранены прокси для North Macedonia в world/North Macedonia
+2024-12-18 13:50:43,058 - INFO - Сохранены прокси для Afghanistan в world/Afghanistan
+2024-12-18 13:50:43,059 - INFO - Сохранены прокси для Pakistan в world/Pakistan
+2024-12-18 13:50:43,059 - INFO - Сохранены прокси для Luxembourg в world/Luxembourg
+2024-12-18 13:50:43,059 - INFO - Сохранены прокси для El Salvador в world/El Salvador
+2024-12-18 13:50:43,060 - INFO - Сохранены прокси для Armenia в world/Armenia
+2024-12-18 13:50:43,060 - INFO - Сохранены прокси для Laos в world/Laos
+2024-12-18 13:50:43,060 - INFO - Сохранены прокси для Kyrgyzstan в world/Kyrgyzstan
+2024-12-18 13:50:43,061 - INFO - Сохранены прокси для Uruguay в world/Uruguay
+2024-12-18 13:50:43,061 - INFO - Сохранены прокси для Portugal в world/Portugal
+2024-12-18 13:50:43,061 - INFO - Сохранены прокси для Montenegro в world/Montenegro
+2024-12-18 13:50:43,061 - INFO - Сохранены прокси для Macao в world/Macao
+2024-12-18 13:50:43,061 - INFO - Сохранены прокси для Norway в world/Norway
+2024-12-18 13:50:43,062 - INFO - Сохранены прокси для Mozambique в world/Mozambique
+2024-12-18 13:50:43,062 - INFO - Сохранены прокси для Libya в world/Libya
+2024-12-18 13:50:43,062 - INFO - Сохранены прокси для Bolivia в world/Bolivia
+2024-12-18 13:50:43,062 - INFO - Сохранены прокси для Qatar в world/Qatar
+2024-12-18 13:50:43,063 - INFO - Сохранены прокси для Somalia в world/Somalia
+2024-12-18 13:50:43,063 - INFO - Сохранены прокси для Tunisia в world/Tunisia
+2024-12-18 13:50:43,063 - INFO - Сохранены прокси для Malta в world/Malta
+2024-12-18 13:50:43,063 - INFO - Сохранены прокси для Guinea в world/Guinea
+2024-12-18 13:50:43,063 - INFO - Сохранены прокси для Estonia в world/Estonia
+2024-12-18 13:50:43,064 - INFO - Сохранены прокси для Uganda в world/Uganda
+2024-12-18 13:50:43,064 - INFO - Сохранены прокси для Namibia в world/Namibia
+2024-12-18 13:50:43,064 - INFO - Сохранены прокси для Belize в world/Belize
+2024-12-18 13:50:43,064 - INFO - Сохранены прокси для Puerto Rico в world/Puerto Rico
+2024-12-18 13:50:43,065 - INFO - Сохранены прокси для Malawi в world/Malawi
+2024-12-18 13:50:43,065 - INFO - Сохранены прокси для Cuba в world/Cuba
+2024-12-18 13:50:43,065 - INFO - Сохранены прокси для Gabon в world/Gabon
+2024-12-18 13:50:43,065 - INFO - Сохранены прокси для Panama в world/Panama
+2024-12-18 13:50:43,066 - INFO - Сохранены прокси для Belarus в world/Belarus
+2024-12-18 13:50:43,066 - INFO - Сохранены прокси для Ivory Coast в world/Ivory Coast
+2024-12-18 13:50:43,066 - INFO - Сохранены прокси для Cameroon в world/Cameroon
+2024-12-18 13:50:43,066 - INFO - Сохранены прокси для Denmark в world/Denmark
+2024-12-18 13:50:43,066 - INFO - Сохранены прокси для Israel в world/Israel
+2024-12-18 13:50:43,067 - INFO - Сохранены прокси для Ireland в world/Ireland
+2024-12-18 13:50:43,067 - INFO - Сохранены прокси для Togo в world/Togo
+2024-12-18 13:50:43,067 - INFO - Сохранены прокси для Benin в world/Benin
+2024-12-18 13:50:43,067 - INFO - Сохранены прокси для Oman в world/Oman
+2024-12-18 13:50:43,067 - INFO - Сохранены прокси для Gibraltar в world/Gibraltar
+2024-12-18 13:50:43,068 - INFO - Сохранены прокси для Rwanda в world/Rwanda
+2024-12-18 13:50:43,068 - INFO - Сохранены прокси для New Zealand в world/New Zealand
+2024-12-18 13:50:43,068 - INFO - Сохранены прокси для Trinidad and Tobago в world/Trinidad and Tobago
+2024-12-18 13:50:43,068 - INFO - Сохранены прокси для Zambia в world/Zambia
+2024-12-18 13:50:43,069 - INFO - Сохранены прокси для Madagascar в world/Madagascar
+2024-12-18 13:50:43,069 - INFO - Сохранены прокси для Algeria в world/Algeria
+2024-12-18 13:50:43,069 - INFO - Сохранены прокси для Mauritius в world/Mauritius
+2024-12-18 13:50:43,069 - INFO - Сохранены прокси для Morocco в world/Morocco
+2024-12-18 13:50:43,069 - INFO - Сохранены прокси для Syria в world/Syria
+2024-12-18 13:50:43,070 - INFO - Сохранены прокси для Sri Lanka в world/Sri Lanka
+2024-12-18 13:50:43,070 - INFO - Сохранены прокси для Djibouti в world/Djibouti
+2024-12-18 13:50:43,070 - INFO - Сохранены прокси для Eswatini в world/Eswatini
+2024-12-18 13:50:43,070 - INFO - Сохранены прокси для Haiti в world/Haiti
+2024-12-18 13:50:43,070 - INFO - Сохранены прокси для Equatorial Guinea в world/Equatorial Guinea
+2024-12-18 13:50:43,071 - INFO - Сохранены прокси для French Southern Territories в world/French Southern Territories
+2024-12-18 13:50:43,071 - INFO - Сохранены прокси для Guadeloupe в world/Guadeloupe
+2024-12-18 13:50:43,071 - INFO - Сохранены прокси для British Virgin Islands в world/British Virgin Islands
+2024-12-18 13:50:43,071 - INFO - Сохранены прокси для Sierra Leone в world/Sierra Leone
+2024-12-18 13:50:43,072 - INFO - Сохранены прокси для Bahrain в world/Bahrain
+2024-12-18 13:50:43,072 - INFO - Сохранены прокси для Guam в world/Guam
+2024-12-18 13:50:43,072 - INFO - Сохранены прокси для Turkmenistan в world/Turkmenistan
+2024-12-18 13:50:43,072 - INFO - Сохранены прокси для Martinique в world/Martinique
+2024-12-18 13:50:43,072 - INFO - Сохранены прокси для Gambia в world/Gambia
+2024-12-18 13:50:43,073 - INFO - Сохранены прокси для Angola в world/Angola
+2024-12-18 13:50:43,073 - INFO - Сохранены прокси для U.S. Virgin Islands в world/U.S. Virgin Islands
+2024-12-18 13:50:43,073 - INFO - Сохранены прокси для South Sudan в world/South Sudan
+2024-12-18 13:50:43,073 - INFO - Сохранены прокси для Jamaica в world/Jamaica
+2024-12-18 13:50:43,073 - INFO - Сохранены прокси для Vanuatu в world/Vanuatu
+2024-12-18 13:50:43,074 - INFO - Сохранены прокси для Kuwait в world/Kuwait
+2024-12-18 13:50:43,074 - INFO - Сохранены прокси для Iceland в world/Iceland
+2024-12-18 13:50:43,074 - INFO - Сохранены прокси для Mayotte в world/Mayotte
+2024-12-18 13:50:43,074 - INFO - Сохранены прокси для Jordan в world/Jordan
+2024-12-18 13:50:43,075 - INFO - Сохранены прокси для Tajikistan в world/Tajikistan
+2024-12-18 13:50:43,075 - INFO - Сохранены прокси для Barbados в world/Barbados
+2024-12-18 13:50:43,075 - INFO - Начало сохранения всех прокси...
+2024-12-18 13:50:43,075 - INFO - Сохранены HTTP прокси в proxies/http.txt
+2024-12-18 13:50:43,075 - INFO - Сохранены SOCKS5 прокси в proxies/socks5.txt
+2024-12-18 13:50:43,075 - INFO - Сохранены все прокси в proxies/all.txt
+2024-12-18 13:50:43,075 - INFO - Все операции завершены.
